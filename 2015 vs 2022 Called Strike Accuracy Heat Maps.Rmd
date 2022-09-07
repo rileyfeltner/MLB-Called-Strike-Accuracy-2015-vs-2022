@@ -101,6 +101,7 @@ strike <- called_strike_plot(PData)+
 strike
 ```
 
+#2015 Data
 ```{r}
 date04050411 <- baseballr::scrape_statcast_savant(start_date = '2015-04-05',
                                   end_date = '2015-04-11', player_type = 'pitcher')
@@ -200,7 +201,7 @@ Savantdata15 <- rbind(date04050411, date04120418, date04190425, date04260502, da
 date05100516, date05170523, date05240530, date05310606, date06070613, date06140620, date06210627, date06280704, date07050711, date07120718, date07190725, date07260801, date08020808, date08300905, date09060912, date09130919, date09200926, date09271003, date10041010, date10111017, date10181024, date1101)
 ```
 
-
+#2015
 ```{r}
 write.csv(Savantdata15, "MySavantPitching15.csv", row.names = F)
 Savantdata15 = read.csv("MySavantPitching15.csv", stringsAsFactors = F)
