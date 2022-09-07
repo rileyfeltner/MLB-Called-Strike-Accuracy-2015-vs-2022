@@ -1,0 +1,233 @@
+---
+title: "2015 vs 2022 Called Strike Accuracy Heat Maps"
+author: "Riley Feltner"
+date: "8/10/2022"
+output: html_document
+---
+
+```{r}
+library(baseballr)
+library(devtools)
+library(CalledStrike)
+```
+
+#2022 Data
+```{r}
+date04070413 <- baseballr::scrape_statcast_savant(start_date = '2022-04-07',
+                                  end_date = '2022-04-13', player_type = 'pitcher')
+
+date04140420 <- baseballr::scrape_statcast_savant(start_date = '2022-04-14',
+                                  end_date = '2022-04-20', player_type = 'pitcher')
+
+date04210427 <- baseballr::scrape_statcast_savant(start_date = '2022-04-21',
+                                  end_date = '2022-04-27', player_type = 'pitcher')
+
+date04280504 <- baseballr::scrape_statcast_savant(start_date = '2022-04-28',
+                                  end_date = '2022-05-04', player_type = 'pitcher')
+
+date05050511 <- baseballr::scrape_statcast_savant(start_date = '2022-05-05',
+                                  end_date = '2022-05-11', player_type = 'pitcher')
+
+date05120518 <- baseballr::scrape_statcast_savant(start_date = '2022-05-12',
+                                  end_date = '2022-05-18', player_type = 'pitcher')
+
+date05190525 <- baseballr::scrape_statcast_savant(start_date = '2022-05-19',
+                                  end_date = '2022-05-25', player_type = 'pitcher')
+
+date05260601 <- baseballr::scrape_statcast_savant(start_date = '2022-05-26',
+                                  end_date = '2022-06-01', player_type = 'pitcher')
+
+date06010607 <- baseballr::scrape_statcast_savant(start_date = '2022-06-01',
+                                  end_date = '2022-06-07', player_type = 'pitcher')
+
+date06080614 <- baseballr::scrape_statcast_savant(start_date = '2022-06-08',
+                                  end_date = '2022-06-14', player_type = 'pitcher')
+
+date06150621 <- baseballr::scrape_statcast_savant(start_date = '2022-06-15',
+                                  end_date = '2022-06-21', player_type = 'pitcher')
+
+date06220628 <- baseballr::scrape_statcast_savant(start_date = '2022-06-22',
+                                  end_date = '2022-06-28', player_type = 'pitcher')
+
+date06290705 <- baseballr::scrape_statcast_savant(start_date = '2022-06-29',
+                                  end_date = '2022-07-05', player_type = 'pitcher')
+
+date07060712 <- baseballr::scrape_statcast_savant(start_date = '2022-07-06',
+                                  end_date = '2022-07-12', player_type = 'pitcher')
+
+date07130717 <- baseballr::scrape_statcast_savant(start_date = '2022-07-13',
+                                  end_date = '2022-07-17', player_type = 'pitcher')
+
+date07180724 <- baseballr::scrape_statcast_savant(start_date = '2022-07-18',
+                                  end_date = '2022-07-24', player_type = 'pitcher')
+
+date07250731 <- baseballr::scrape_statcast_savant(start_date = '2022-07-25',
+                                  end_date = '2022-07-31', player_type = 'pitcher')
+
+date08010807 <- baseballr::scrape_statcast_savant(start_date = '2022-08-01',
+                                  end_date = '2022-08-07', player_type = 'pitcher')
+
+date07130717 <- baseballr::scrape_statcast_savant(start_date = '2022-08-08',
+                                  end_date = '2022-08-10', player_type = 'pitcher')
+
+
+
+Savantdata22 <- rbind(date04070413,date04140420, date04210427, date04280504, date05050511, date05120518, date05190525, date05260601, date06010607, date06080614, date06150621, date06220628, date06290705, date07060712, date07130717, date07180724, date07250731, date08010807, date07130717)
+```
+
+#2022
+```{r}
+write.csv(Savantdata22, "MySavantPitching22.csv", row.names = F)
+Savantdata22 = read.csv("MySavantPitching22.csv", stringsAsFactors = F)
+
+library(RSQLite)
+library(DBI)
+
+#Write to a database
+db = dbConnect(SQLite(), dbname = "Statcast22.sqlite")
+dbWriteTable(conn = db, name = "Statcast22_Pitching", Savantdata22, overwrite = T, row.names = F)
+
+db = dbConnect(SQLite(), dbname = "Statcast22.sqlite")
+PData <- dbGetQuery(conn = db, "SELECT * FROM Statcast22_Pitching")
+
+called_strike_plot(PData, "2022 Probability of Called Strike")+
+  labs(caption = "Baseball Savant | Bayesball | Riley Feltner", adj = 1, size = .2)
+       
+strike <- called_strike_plot(PData)+
+  labs(title = "2022 Probability of Called Strike",
+         caption = "Data: Baseball Savant | Bayesball | Riley Feltner")+
+  theme(plot.caption = element_text(size = 8))+
+  theme(plot.caption = element_text(hjust = 2.65))
+strike
+```
+
+```{r}
+date04050411 <- baseballr::scrape_statcast_savant(start_date = '2015-04-05',
+                                  end_date = '2015-04-11', player_type = 'pitcher')
+
+date04120418 <- baseballr::scrape_statcast_savant(start_date = '2015-04-12',
+                                  end_date = '2015-04-18', player_type = 'pitcher')
+
+date04190425 <- baseballr::scrape_statcast_savant(start_date = '2015-04-19',
+                                  end_date = '2015-04-25', player_type = 'pitcher')
+
+date04260502 <- baseballr::scrape_statcast_savant(start_date = '2015-04-26',
+                                  end_date = '2015-05-02', player_type = 'pitcher')
+
+date05030509 <- baseballr::scrape_statcast_savant(start_date = '2015-05-03',
+                                  end_date = '2015-05-09', player_type = 'pitcher')
+
+date05100516 <- baseballr::scrape_statcast_savant(start_date = '2015-05-10',
+                                  end_date = '2015-05-16', player_type = 'pitcher')
+
+date05170523 <- baseballr::scrape_statcast_savant(start_date = '2015-05-17',
+                                  end_date = '2015-05-23', player_type = 'pitcher')
+
+date05240530 <- baseballr::scrape_statcast_savant(start_date = '2015-05-24',
+                                  end_date = '2015-05-30', player_type = 'pitcher')
+
+date05310606 <- baseballr::scrape_statcast_savant(start_date = '2015-05-31',
+                                  end_date = '2015-06-06', player_type = 'pitcher')
+
+date06070613 <- baseballr::scrape_statcast_savant(start_date = '2015-06-07',
+                                  end_date = '2015-06-13', player_type = 'pitcher')
+
+date06140620 <- baseballr::scrape_statcast_savant(start_date = '2015-06-14',
+                                  end_date = '2015-06-20', player_type = 'pitcher')
+
+date06210627 <- baseballr::scrape_statcast_savant(start_date = '2015-06-21',
+                                  end_date = '2015-06-27', player_type = 'pitcher')
+
+date06280704 <- baseballr::scrape_statcast_savant(start_date = '2015-06-28',
+                                  end_date = '2015-07-04', player_type = 'pitcher')
+
+date07050711 <- baseballr::scrape_statcast_savant(start_date = '2015-07-05',
+                                  end_date = '2015-07-11', player_type = 'pitcher')
+
+date07120718 <- baseballr::scrape_statcast_savant(start_date = '2015-07-12',
+                                  end_date = '2015-07-18', player_type = 'pitcher')
+
+date07190725 <- baseballr::scrape_statcast_savant(start_date = '2015-07-19',
+                                  end_date = '2015-07-25', player_type = 'pitcher')
+
+date07260801 <- baseballr::scrape_statcast_savant(start_date = '2015-07-26',
+                                  end_date = '2015-08-01', player_type = 'pitcher')
+
+date08020808 <- baseballr::scrape_statcast_savant(start_date = '2015-08-02',
+                                  end_date = '2015-08-08', player_type = 'pitcher')
+
+date08090815 <- baseballr::scrape_statcast_savant(start_date = '2015-08-09',
+                                  end_date = '2015-08-15', player_type = 'pitcher')
+
+date08160822 <- baseballr::scrape_statcast_savant(start_date = '2015-08-16',
+                                  end_date = '2015-08-22', player_type = 'pitcher')
+
+date08020808 <- baseballr::scrape_statcast_savant(start_date = '2015-08-23',
+                                  end_date = '2015-08-29', player_type = 'pitcher')
+
+date08300905 <- baseballr::scrape_statcast_savant(start_date = '2015-08-30',
+                                  end_date = '2015-09-05', player_type = 'pitcher')
+
+date09060912 <- baseballr::scrape_statcast_savant(start_date = '2015-09-06',
+                                  end_date = '2015-09-12', player_type = 'pitcher')
+
+date09130919 <- baseballr::scrape_statcast_savant(start_date = '2015-09-13',
+                                  end_date = '2015-09-19', player_type = 'pitcher')
+
+date09200926 <- baseballr::scrape_statcast_savant(start_date = '2015-09-20',
+                                  end_date = '2015-09-26', player_type = 'pitcher')
+
+date09271003 <- baseballr::scrape_statcast_savant(start_date = '2015-09-27',
+                                  end_date = '2015-10-03', player_type = 'pitcher')
+
+date10041010 <- baseballr::scrape_statcast_savant(start_date = '2015-10-04',
+                                  end_date = '2015-10-10', player_type = 'pitcher')
+
+date10111017 <- baseballr::scrape_statcast_savant(start_date = '2015-10-11',
+                                  end_date = '2015-10-17', player_type = 'pitcher')
+
+date10181024 <- baseballr::scrape_statcast_savant(start_date = '2015-10-18',
+                                  end_date = '2015-10-24', player_type = 'pitcher')
+
+date10181024 <- baseballr::scrape_statcast_savant(start_date = '2015-10-25',
+                                  end_date = '2015-10-31', player_type = 'pitcher')
+
+date1101 <- baseballr::scrape_statcast_savant(start_date = '2015-11-01',
+                                  end_date = '2015-11-01', player_type = 'pitcher')
+
+
+Savantdata15 <- rbind(date04050411, date04120418, date04190425, date04260502, date05030509, 
+date05100516, date05170523, date05240530, date05310606, date06070613, date06140620, date06210627, date06280704, date07050711, date07120718, date07190725, date07260801, date08020808, date08300905, date09060912, date09130919, date09200926, date09271003, date10041010, date10111017, date10181024, date1101)
+```
+
+
+```{r}
+write.csv(Savantdata15, "MySavantPitching15.csv", row.names = F)
+Savantdata15 = read.csv("MySavantPitching15.csv", stringsAsFactors = F)
+
+library(RSQLite)
+library(DBI)
+
+#Write to a database
+db15 = dbConnect(SQLite(), dbname = "Statcast15.sqlite")
+dbWriteTable(conn = db15, name = "Statcast15_Pitching", Savantdata15, overwrite = T, row.names = F)
+
+db15 = dbConnect(SQLite(), dbname = "Statcast15.sqlite")
+PData1 <- dbGetQuery(conn = db15, "SELECT * FROM Statcast15_Pitching")
+
+called_strike_plot(PData1, title = "2015 Probability of Called Strike")
+
+
+strike1 <- called_strike_plot(PData1)+
+  labs(title = "2015 Probability of Called Strike",
+         caption = "Data: Baseball Savant | Bayesball | Riley Feltner")+
+  theme(plot.caption = element_text(size = 8))+
+  theme(plot.caption = element_text(hjust = 2.65))
+strike1
+```
+
+
+
+
+
+
